@@ -96,7 +96,7 @@ async function fetchTrading212Data() {
       <br>
       <hr>
 
-      <p>Data generării email-ului: <b>${new Date().toDateString()}</b></p>
+      <p>Sumele prezentate sunt cele de la data de: <b>${new Date().toDateString()}</b>. Ține minte că ele variază zilnic!</p>
     `;
     transporter.sendMail(mailOptions, (err, info) => {
       if (err) {
