@@ -1,4 +1,5 @@
 # Express API Starter
+### Credits: https://github.com/w3cj/create-express-api
 
 How to use this template:
 
@@ -23,10 +24,6 @@ Development utilities:
   * nodemon is a tool that helps develop node.js based applications by automatically restarting the node application when file changes in the directory are detected.
 * [eslint](https://www.npmjs.com/package/eslint)
   * ESLint is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code.
-* [jest](https://www.npmjs.com/package/jest)
-  * Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
-* [supertest](https://www.npmjs.com/package/supertest)
-  * HTTP assertions made easy via superagent.
 
 ## Setup
 
@@ -38,12 +35,6 @@ npm install
 
 ```
 npm run lint
-```
-
-## Test
-
-```
-npm test
 ```
 
 ## Development
