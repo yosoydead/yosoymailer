@@ -2,12 +2,14 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
+const schedule = require('node-schedule');
 
 require('dotenv').config();
 
 const middlewares = require('./middlewares');
 
 const app = express();
+const mailer = require('./mailer');
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -22,5 +24,10 @@ app.get('/', (req, res) => {
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
+
+// eslint-disable-next-line max-len
+// În fiecare vineri la prânz. Așa mă asigur și că aplicația merge și nu dă rateuri ca să aflu abia după 1 lună.
+// Rămâne să mă gândesc dacă ăsta o să fie intervalul final. Momentan, așa rămâne.
+schedule.scheduleJob('0 12 * * FRI', mailer);
 
 module.exports = app;
