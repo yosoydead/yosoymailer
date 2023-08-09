@@ -21,7 +21,9 @@
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "helmet": "^7.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.6.12",
+    "nodemailer": "^6.9.4"
   },
   "devDependencies": {
     "eslint": "^8.42.0",
