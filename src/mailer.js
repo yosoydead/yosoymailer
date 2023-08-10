@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const nodemailer = require('nodemailer');
+const { XMLParser } = require('fast-xml-parser');
 
 const TRADING212_BASE_URL = 'https://live.trading212.com/api/v0/';
 const TRADING212_URLS = [
@@ -7,6 +8,7 @@ const TRADING212_URLS = [
   'equity/account/cash',
   'equity/portfolio',
 ];
+const BNR_EXCHANGE = 'https://www.bnr.ro/nbrfxrates.xml';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -47,11 +49,16 @@ async function fetchTrading212Data() {
   try {
     const promises = await Promise.all(generateObjectParams().map((arr) => fetch(arr[0], arr[1])));
     const parsedData = await Promise.all(promises.map((p) => p.json()));
+    const exchangeRate = await fetch(BNR_EXCHANGE);
+    const xmlExchangeData = new XMLParser().parse(await exchangeRate.text());
+    // aparent, BNR aranjeaza cursul valutar in ordinea alfabetica a prescurtarii monedelor
+    // fast-xml-parser creeaza un array din lista de curs valutar. Euro ar fi pozitia 11 din lista
+    const cursEuro = xmlExchangeData.DataSet.Body.Cube.Rate[10];
     const moneda = monede[parsedData[0].currencyCode];
     mailOptions.html = `
       <h1>Salut!</h1>
       <p>Ăsta este email-ul regulat în legătură cu starea 'portofoliului' de investiții (sau de bani aruncați pe geam).</p>
-      <p>Pentru suma în lei, vezi pe <b>Revolut</b>.</p>
+      <p>Pentru suma totală, în lei, transferată spre Trading212, vezi pe <b>Revolut</b>.</p>
 
       <table border='1' style="width: 100%;">
         <tr>
@@ -68,7 +75,13 @@ async function fetchTrading212Data() {
           <td style="background-color: #5DADE2;">${parsedData[1].total} ${moneda}</td>
         </tr>
       </table>
-      <p>Procent profit generat: <u style="background-color: #28B463;"><b>${((parsedData[1].ppl / parsedData[1].invested) * 100).toFixed(4)}%</b></u>. <i>Precizie de 4 zecimale.</i></p>
+
+      <p>Curs Euro - RON în ziua curentă: <u style="background-color: #5DADE2;"><b>${cursEuro}</b></u>.</p>
+      <ul>
+        <li>Procent profit generat: <u style="background-color: #28B463;"><b>${((parsedData[1].ppl / parsedData[1].invested) * 100).toFixed(4)}</b></u>%</li>
+        <li>Profit convertit: <u style="background-color: #5DADE2;"><b>${(parsedData[1].ppl * cursEuro).toFixed(2)}</b></u> RON</li>
+        <li>Total cont convertit: <u style="background-color: #5DADE2;"><b>${(parsedData[1].total * cursEuro).toFixed(2)}</b></u> RON</li>
+      </ul>
 
       <hr>
       <h5>Distribuire</h5>
