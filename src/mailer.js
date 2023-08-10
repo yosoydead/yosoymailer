@@ -114,12 +114,24 @@ async function fetchTrading212Data() {
 
       <p>Sumele prezentate sunt cele de la data de: <b>${new Date().toDateString()}</b>. Ține minte că ele variază zilnic!</p>
     `;
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        throw err;
-      } else {
-        console.log(`Email sent: ${info.response}`);
-      }
+    // transporter.sendMail(mailOptions, (err, info) => {
+    //   if (err) {
+    //     throw err;
+    //   } else {
+    //     console.log(`Email sent: ${info.response}`);
+    //   }
+    // });
+    // send mail
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          reject(err);
+          throw err;
+        } else {
+          console.log(`Email sent: ${info.response}`);
+          resolve(info);
+        }
+      });
     });
   } catch (err) {
     console.log(err);
@@ -127,12 +139,23 @@ async function fetchTrading212Data() {
     <p>Mai jos e o parte din obiectul de err din catch.</p>
     <div>${err}</div>`;
 
-    transporter.sendMail(mailOptions, (e, info) => {
-      if (e) {
-        console.log(e);
-      } else {
-        console.log(`Email error sent: ${info.response}`);
-      }
+    // transporter.sendMail(mailOptions, (e, info) => {
+    //   if (e) {
+    //     console.log(e);
+    //   } else {
+    //     console.log(`Email error sent: ${info.response}`);
+    //   }
+    // });
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (e, info) => {
+        if (err) {
+          reject(e);
+          console.log(e);
+        } else {
+          console.log(`Email error sent: ${info.response}`);
+          resolve(info);
+        }
+      });
     });
   }
   console.log('mailer end');
