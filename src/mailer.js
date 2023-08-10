@@ -12,6 +12,8 @@ const BNR_EXCHANGE = 'https://www.bnr.ro/nbrfxrates.xml';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  port: 465,
+  host: 'smtp.gmail.com',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASSWORD,
