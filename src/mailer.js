@@ -50,6 +50,7 @@ async function fetchTrading212Data() {
   try {
     const promises = await Promise.all(generateObjectParams().map((arr) => fetch(arr[0], arr[1])));
     const parsedData = await Promise.all(promises.map((p) => p.json()));
+    console.log('parsed data', parsedData);
     const exchangeRate = await fetch(BNR_EXCHANGE);
     const xmlExchangeData = new XMLParser().parse(await exchangeRate.text());
     // aparent, BNR aranjeaza cursul valutar in ordinea alfabetica a prescurtarii monedelor
