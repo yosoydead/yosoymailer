@@ -119,6 +119,7 @@ async function fetchTrading212Data() {
       }
     });
   } catch (err) {
+    console.log(err);
     mailOptions.html = `<h1>Eroare la fetch data</h1>
     <p>Mai jos e o parte din obiectul de err din catch.</p>
     <div>${err}</div>`;
