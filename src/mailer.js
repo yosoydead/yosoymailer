@@ -49,6 +49,7 @@ async function fetchTrading212Data() {
   console.log('mailer');
   try {
     const promises = await Promise.all(generateObjectParams().map((arr) => fetch(arr[0], arr[1])));
+    console.log('promises', promises);
     const parsedData = await Promise.all(promises.map((p) => p.json()));
     console.log('parsed data', parsedData);
     const exchangeRate = await fetch(BNR_EXCHANGE);
@@ -134,6 +135,7 @@ async function fetchTrading212Data() {
       }
     });
   }
+  console.log('mailer end');
 }
 
 module.exports = fetchTrading212Data;
