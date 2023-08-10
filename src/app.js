@@ -17,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
+  console.log('home route');
   mailer();
   res.json({
     message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',

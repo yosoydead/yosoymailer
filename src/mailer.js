@@ -46,6 +46,7 @@ function generateObjectParams() {
 }
 
 async function fetchTrading212Data() {
+  console.log('mailer');
   try {
     const promises = await Promise.all(generateObjectParams().map((arr) => fetch(arr[0], arr[1])));
     const parsedData = await Promise.all(promises.map((p) => p.json()));
