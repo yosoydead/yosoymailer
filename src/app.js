@@ -17,8 +17,6 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  // console.log('home route');
-  // mailer();
   res.json({
     message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
   });
@@ -32,6 +30,6 @@ app.use(middlewares.errorHandler);
 // Rămâne să mă gândesc dacă ăsta o să fie intervalul final. Momentan, așa rămâne.
 // schedule.scheduleJob('0 14 * * FRI', mailer);
 
-schedule.scheduleJob('*/1 * * * *', mailer);
+schedule.scheduleJob('*/2 * * * *', mailer);
 
 module.exports = app;

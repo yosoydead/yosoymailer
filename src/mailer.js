@@ -48,13 +48,16 @@ function generateObjectParams() {
   ]);
 }
 
+/**
+ * Nu vrea sa mearga pe Cyclic.sh pt ca e serverless (promise-urile dadeau rateuri de multe ori).
+ *  Aparent, serverless ruleaza functia odata si apoi inchide container-ul (sau ce o fi).
+ *  La fiecare request s-ar executa intr-un container nou, ceea ce nu e ideal pt ca am
+ *  nevoie de cronjob sa ruleze la un interval stabilit.
+ */
 async function fetchTrading212Data() {
-  console.log('mailer');
   try {
     const promises = await Promise.all(generateObjectParams().map((arr) => fetch(arr[0], arr[1])));
-    console.log('promises', promises);
     const parsedData = await Promise.all(promises.map((p) => p.json()));
-    console.log('parsed data', parsedData);
     const exchangeRate = await fetch(BNR_EXCHANGE);
     const xmlExchangeData = new XMLParser().parse(await exchangeRate.text());
     // aparent, BNR aranjeaza cursul valutar in ordinea alfabetica a prescurtarii monedelor
@@ -117,51 +120,26 @@ async function fetchTrading212Data() {
 
       <p>Sumele prezentate sunt cele de la data de: <b>${new Date().toDateString()}</b>. Ține minte că ele variază zilnic!</p>
     `;
-    // transporter.sendMail(mailOptions, (err, info) => {
-    //   if (err) {
-    //     throw err;
-    //   } else {
-    //     console.log(`Email sent: ${info.response}`);
-    //   }
-    // });
-    // send mail
-    await new Promise((resolve, reject) => {
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          reject(err);
-          throw err;
-        } else {
-          console.log(`Email sent: ${info.response}`);
-          resolve(info);
-        }
-      });
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        throw err;
+      } else {
+        console.log(`Email sent: ${info.response}`);
+      }
     });
   } catch (err) {
-    console.log(err);
     mailOptions.html = `<h1>Eroare la fetch data</h1>
     <p>Mai jos e o parte din obiectul de err din catch.</p>
     <div>${err}</div>`;
 
-    // transporter.sendMail(mailOptions, (e, info) => {
-    //   if (e) {
-    //     console.log(e);
-    //   } else {
-    //     console.log(`Email error sent: ${info.response}`);
-    //   }
-    // });
-    await new Promise((resolve, reject) => {
-      transporter.sendMail(mailOptions, (e, info) => {
-        if (err) {
-          reject(e);
-          console.log(e);
-        } else {
-          console.log(`Email error sent: ${info.response}`);
-          resolve(info);
-        }
-      });
+    transporter.sendMail(mailOptions, (e, info) => {
+      if (e) {
+        console.log(e);
+      } else {
+        console.log(`Email error sent: ${info.response}`);
+      }
     });
   }
-  console.log('mailer end');
 }
 
 module.exports = fetchTrading212Data;
